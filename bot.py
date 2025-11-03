@@ -134,11 +134,11 @@ def create_video_embed(video_data):
 if __name__ == "__main__":
     database.init_db()  # 프로그램 시작 시 데이터베이스 파일이 없으면 생성
     bot.run(DISCORD_BOT_TOKEN)
-# bot.py 파일의 맨 아래, 기존 코드 밑에 추가
+# === 웹서버 유지를 위한 최종 코드 ===
 from flask import Flask
 from threading import Thread
+import os # os 라이브러리 추가
 
-# === 웹서버 유지를 위한 코드 ===
 app = Flask('')
 
 @app.route('/')
@@ -146,16 +146,18 @@ def home():
     return "I'm alive!"
 
 def run():
-  app.run(host='0.0.0.0', port=8080)
+  # Render가 지정해준 포트를 사용하고, 없으면 기본으로 8080 포트 사용
+  port = int(os.environ.get('PORT', 8080))
+  app.run(host='0.0.0.0', port=port)
 
 def keep_alive():
     t = Thread(target=run)
     t.start()
-# ==========================
+# =================================
 
 
-# --- 봇 실행 (수정된 최종 버전) ---
+# --- 봇 실행 (이 부분은 그대로 둡니다) ---
 if __name__ == "__main__":
     database.init_db()
-    keep_alive() # 웹서버를 먼저 켜고,
-    bot.run(DISCORD_BOT_TOKEN) # 그 다음에 봇을 실행
+    keep_alive()
+    bot.run(DISCORD_BOT_TOKEN)
