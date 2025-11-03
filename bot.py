@@ -1,3 +1,5 @@
+from flask import Flask
+from threading import Thread
 import os
 import discord
 from discord.ext import commands, tasks
@@ -133,4 +135,25 @@ def create_video_embed(video_data):
 # --- 봇 실행 ---
 if __name__ == "__main__":
     database.init_db()  # 프로그램 시작 시 데이터베이스 파일이 없으면 생성
+    bot.run(DISCORD_BOT_TOKEN)
+    # === 웹서버 유지를 위한 코드 ===
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "I'm alive!"
+
+def run():
+  app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+# ==========================
+
+
+# --- 봇 실행 ---
+if __name__ == "__main__":
+    database.init_db()
+    keep_alive() # 웹서버 실행 코드를 여기에 추가!
     bot.run(DISCORD_BOT_TOKEN)
